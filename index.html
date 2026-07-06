@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generador de Frases Alfaro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 500px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      background: #222;
+      color: white;
+    }
+    #frase {
+      margin-top: 25px;
+      font-size: 22px;
+      line-height: 1.4;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Generador de Frases del Técnico Alfaro</h1>
+    <button onclick="generarFrase()">Generar frase</button>
+    <p id="frase">Tocá el botón para recibir sabiduría futbolera.</p>
+  </div>
+  <script>
+    const inicios = [
+      "El fútbol es como",
+      "Un equipo es como",
+      "La presión es como",
+      "La cancha es como",
+      "El vestuario es como",
+      "Un partido es como",
+      "La vida del futbolista es como"
+    ];
+    const metaforas = [
+      "un mate que hay que cebar despacio",
+      "un árbol que primero necesita raíces",
+      "un río que siempre encuentra su cauce",
+      "una montaña que se sube paso a paso",
+      "un libro que no se entiende por una sola página",
+      "una tormenta que también enseña a navegar",
+      "un camino de tierra donde hay que saber pisar"
+    ];
+    const cierres = [
+      "si te apurás, lo terminás arruinando.",
+      "porque los frutos nunca aparecen antes de tiempo.",
+      "y el que sabe esperar, termina encontrando su momento.",
+      "porque no gana el que más corre, sino el que mejor interpreta.",
+      "y eso los muchachos lo entendieron muy bien.",
+      "porque en el fútbol, como en la vida, no hay atajos.",
+      "y cuando el grupo cree, las piernas responden."
+    ];
+    function generarFrase() {
+      const inicio = inicios[Math.floor(Math.random() * inicios.length)];
+      const metafora = metaforas[Math.floor(Math.random() * metaforas.length)];
+      const cierre = cierres[Math.floor(Math.random() * cierres.length)];
+      document.getElementById("frase").innerText =
+        `${inicio} ${metafora}, ${cierre}`;
+    }
+  </script>
+</body>
+</html>
