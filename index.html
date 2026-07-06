@@ -2,82 +2,66 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Generador de Frases Alfaro</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f3f3;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 500px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    }
-    button {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      background: #222;
-      color: white;
-    }
-    #frase {
-      margin-top: 25px;
-      font-size: 22px;
-      line-height: 1.4;
-      font-style: italic;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de Frases del Técnico Alfaro</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="card">
-    <h1>Generador de Frases del Técnico Alfaro</h1>
-    <button onclick="generarFrase()">Generar frase</button>
-    <p id="frase">Tocá el botón para recibir sabiduría futbolera.</p>
-  </div>
-  <script>
-    const inicios = [
-      "El fútbol es como",
-      "Un equipo es como",
-      "La presión es como",
-      "La cancha es como",
-      "El vestuario es como",
-      "Un partido es como",
-      "La vida del futbolista es como"
-    ];
-    const metaforas = [
-      "un mate que hay que cebar despacio",
-      "un árbol que primero necesita raíces",
-      "un río que siempre encuentra su cauce",
-      "una montaña que se sube paso a paso",
-      "un libro que no se entiende por una sola página",
-      "una tormenta que también enseña a navegar",
-      "un camino de tierra donde hay que saber pisar"
-    ];
-    const cierres = [
-      "si te apurás, lo terminás arruinando.",
-      "porque los frutos nunca aparecen antes de tiempo.",
-      "y el que sabe esperar, termina encontrando su momento.",
-      "porque no gana el que más corre, sino el que mejor interpreta.",
-      "y eso los muchachos lo entendieron muy bien.",
-      "porque en el fútbol, como en la vida, no hay atajos.",
-      "y cuando el grupo cree, las piernas responden."
-    ];
-    function generarFrase() {
-      const inicio = inicios[Math.floor(Math.random() * inicios.length)];
-      const metafora = metaforas[Math.floor(Math.random() * metaforas.length)];
-      const cierre = cierres[Math.floor(Math.random() * cierres.length)];
-      document.getElementById("frase").innerText =
-        `${inicio} ${metafora}, ${cierre}`;
-    }
-  </script>
+  <main class="app">
+    <section class="hero-card">
+      <div class="stars" aria-hidden="true">
+        <span>✦</span><span>✚</span><span>✦</span><span>✚</span>
+      </div>
+
+      <header class="header">
+        <p class="kicker">Generador de</p>
+        <h1>Frases</h1>
+        <p class="subtitle">del técnico Alfaro</p>
+      </header>
+
+      <div class="coach-stage">
+        <img src="assets/alfaro-8bit.png" alt="Ilustración 8-bit de un técnico de fútbol en conferencia de prensa" />
+      </div>
+
+      <article class="quote-box" aria-live="polite">
+        <span class="quote-mark left">“</span>
+        <p id="quoteText">El fútbol es como un mate que hay que cebar despacio; si te apurás, lo terminás lavando.</p>
+        <span class="quote-mark right">”</span>
+      </article>
+
+      <div class="actions">
+        <button id="newQuote" class="primary">↻ Nueva frase</button>
+        <div class="secondary-actions">
+          <button id="copyQuote">📋 Copiar</button>
+          <button id="shareQuote">🔗 Compartir</button>
+          <button id="speakQuote">🔊 Escuchar</button>
+          <button id="favoriteQuote">♡ Favorita</button>
+        </div>
+      </div>
+
+      <section class="info-card">
+        <div>
+          <strong>Sabiduría Alfaro</strong>
+          <p>Reflexiones, metáforas y enseñanzas de vida al estilo del Maestro.</p>
+        </div>
+        <span class="trophy" aria-hidden="true">🏆</span>
+      </section>
+
+      <section class="favorites-panel" id="favoritesPanel">
+        <h2>Favoritas</h2>
+        <ul id="favoritesList"></ul>
+        <button id="clearFavorites" class="ghost">Borrar favoritas</button>
+      </section>
+
+      <footer>
+        <button class="tab active" data-tab="quote">⚽ Frase</button>
+        <button class="tab" data-tab="favorites">♡ Favoritas</button>
+        <button class="tab" data-tab="info">ⓘ Info</button>
+      </footer>
+    </section>
+  </main>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
 </body>
 </html>
