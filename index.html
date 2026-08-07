@@ -2,7 +2,15 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#04102b" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Alfaro" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="Generador de frases del técnico Alfaro. Abrilo en Safari en iPad o iPhone." />
   <title>Generador de Frases del Técnico Alfaro</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -20,29 +28,35 @@
       </header>
 
       <div class="coach-stage">
-        <img src="assets/alfaro-8bit.png" alt="Ilustración 8-bit de un técnico de fútbol en conferencia de prensa" />
+        <img
+          src="assets/alfaro-8bit.png"
+          alt="Ilustración 8-bit de un técnico de fútbol en conferencia de prensa"
+          width="800"
+          height="608"
+          decoding="async"
+        />
       </div>
 
       <article class="quote-box" aria-live="polite">
-        <span class="quote-mark left">“</span>
+        <span class="quote-mark left" aria-hidden="true">“</span>
         <p id="quoteText">El fútbol es como un mate que hay que cebar despacio; si te apurás, lo terminás lavando.</p>
-        <span class="quote-mark right">”</span>
+        <span class="quote-mark right" aria-hidden="true">”</span>
       </article>
 
       <div class="actions">
-        <button id="newQuote" class="primary">↻ Nueva frase</button>
+        <button type="button" id="newQuote" class="primary">↻ Nueva frase</button>
         <div class="secondary-actions">
-          <button id="copyQuote">📋 Copiar</button>
-          <button id="shareQuote">🔗 Compartir</button>
-          <button id="speakQuote">🔊 Escuchar</button>
-          <button id="favoriteQuote">♡ Favorita</button>
+          <button type="button" id="copyQuote">📋 Copiar</button>
+          <button type="button" id="shareQuote">🔗 Compartir</button>
+          <button type="button" id="speakQuote">🔊 Escuchar</button>
+          <button type="button" id="favoriteQuote">♡ Favorita</button>
         </div>
       </div>
 
-      <section class="info-card">
+      <section class="info-card" id="infoCard">
         <div>
           <strong>Sabiduría Alfaro</strong>
-          <p>Reflexiones, metáforas y enseñanzas de vida al estilo del Maestro.</p>
+          <p>Reflexiones, metáforas y enseñanzas de vida al estilo del Maestro. Pensado para Safari en iPad.</p>
         </div>
         <span class="trophy" aria-hidden="true">🏆</span>
       </section>
@@ -50,23 +64,21 @@
       <section class="favorites-panel" id="favoritesPanel">
         <h2>Favoritas</h2>
         <ul id="favoritesList"></ul>
-        <button id="clearFavorites" class="ghost">Borrar favoritas</button>
+        <button type="button" id="clearFavorites" class="ghost">Borrar favoritas</button>
       </section>
 
-      <footer>
-        <button class="tab active" data-tab="quote">⚽ Frase</button>
-        <button class="tab" data-tab="favorites">♡ Favoritas</button>
-        <button class="tab" data-tab="info">ⓘ Info</button>
-        <div class="footer">
-          <br>
-          <a href="https://instagram.com/roidelatorre" target="_blank">@roidelatorre</a>
-          </div>
-        </div>
+      <nav class="tabs" aria-label="Secciones">
+        <button type="button" class="tab active" data-tab="quote">⚽ Frase</button>
+        <button type="button" class="tab" data-tab="favorites">♡ Favoritas</button>
+        <button type="button" class="tab" data-tab="info">ⓘ Info</button>
+      </nav>
+
+      <footer class="site-footer">
+        <a href="https://instagram.com/roidelatorre" target="_blank" rel="noopener noreferrer">@roidelatorre</a>
       </footer>
     </section>
   </main>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="script.js"></script>
 </body>
-
 </html>

@@ -50,12 +50,34 @@ const quoteText = document.getElementById("quoteText");
 const favoritesPanel = document.getElementById("favoritesPanel");
 const favoritesList = document.getElementById("favoritesList");
 const toast = document.getElementById("toast");
+const favoriteButton = document.getElementById("favoriteQuote");
 
 let currentQuote = quoteText.textContent;
-let favorites = JSON.parse(localStorage.getItem("alfaroFavorites") || "[]");
+let favorites = loadFavorites();
+
+function loadFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem("alfaroFavorites") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveFavorites() {
+  try {
+    localStorage.setItem("alfaroFavorites", JSON.stringify(favorites));
+  } catch {
+    showToast("No se pudieron guardar favoritas");
+  }
+}
 
 function randomFrom(list) {
   return list[Math.floor(Math.random() * list.length)];
+}
+
+function updateFavoriteLabel() {
+  favoriteButton.textContent = favorites.includes(currentQuote) ? "♥ Favorita" : "♡ Favorita";
+  favoriteButton.setAttribute("aria-pressed", favorites.includes(currentQuote) ? "true" : "false");
 }
 
 function generateQuote() {
@@ -63,14 +85,47 @@ function generateQuote() {
   const addClosing = Math.random() > 0.55;
   currentQuote = addClosing ? `${base} ${randomFrom(premiumClosings)}` : base;
   quoteText.textContent = currentQuote;
-  document.getElementById("favoriteQuote").textContent = favorites.includes(currentQuote) ? "♥ Favorita" : "♡ Favorita";
+  updateFavoriteLabel();
+}
+
+function fallbackCopy(text) {
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.setAttribute("readonly", "");
+  area.style.position = "fixed";
+  area.style.top = "0";
+  area.style.left = "0";
+  area.style.opacity = "0";
+  document.body.appendChild(area);
+  area.focus();
+  area.select();
+  area.setSelectionRange(0, text.length);
+
+  let ok = false;
+  try {
+    ok = document.execCommand("copy");
+  } catch {
+    ok = false;
+  }
+
+  document.body.removeChild(area);
+  return ok;
 }
 
 async function copyQuote() {
   try {
-    await navigator.clipboard.writeText(currentQuote);
-    showToast("Frase copiada");
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(currentQuote);
+      showToast("Frase copiada");
+      return;
+    }
   } catch {
+    // Fall through to legacy copy for Safari/file:// contexts.
+  }
+
+  if (fallbackCopy(currentQuote)) {
+    showToast("Frase copiada");
+  } else {
     showToast("No se pudo copiar");
   }
 }
@@ -84,13 +139,14 @@ async function shareQuote() {
   if (navigator.share) {
     try {
       await navigator.share(shareData);
-    } catch {
-      // User cancelled share; no message needed.
+      return;
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
     }
-  } else {
-    await copyQuote();
-    showToast("Copiada para compartir");
   }
+
+  await copyQuote();
+  showToast("Copiada para compartir");
 }
 
 function speakQuote() {
@@ -100,11 +156,15 @@ function speakQuote() {
   }
 
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(currentQuote);
-  utterance.lang = "es-AR";
-  utterance.rate = 0.88;
-  utterance.pitch = 0.88;
-  window.speechSynthesis.speak(utterance);
+
+  // iOS Safari sometimes needs a tiny delay after cancel.
+  window.setTimeout(() => {
+    const utterance = new SpeechSynthesisUtterance(currentQuote);
+    utterance.lang = "es-AR";
+    utterance.rate = 0.88;
+    utterance.pitch = 0.88;
+    window.speechSynthesis.speak(utterance);
+  }, 50);
 }
 
 function toggleFavorite() {
@@ -115,9 +175,9 @@ function toggleFavorite() {
     favorites.unshift(currentQuote);
     showToast("Guardada en favoritas");
   }
-  localStorage.setItem("alfaroFavorites", JSON.stringify(favorites));
+  saveFavorites();
   renderFavorites();
-  document.getElementById("favoriteQuote").textContent = favorites.includes(currentQuote) ? "♥ Favorita" : "♡ Favorita";
+  updateFavoriteLabel();
 }
 
 function renderFavorites() {
@@ -138,21 +198,28 @@ function renderFavorites() {
 
 function clearFavorites() {
   favorites = [];
-  localStorage.removeItem("alfaroFavorites");
+  try {
+    localStorage.removeItem("alfaroFavorites");
+  } catch {
+    // Ignore storage errors on private browsing edge cases.
+  }
   renderFavorites();
-  document.getElementById("favoriteQuote").textContent = "♡ Favorita";
+  updateFavoriteLabel();
   showToast("Favoritas borradas");
 }
 
 function showToast(message) {
   toast.textContent = message;
   toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 1800);
+  window.clearTimeout(showToast._timer);
+  showToast._timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
 }
 
 function setTab(tabName) {
   document.querySelectorAll(".tab").forEach(tab => {
-    tab.classList.toggle("active", tab.dataset.tab === tabName);
+    const active = tab.dataset.tab === tabName;
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-selected", active ? "true" : "false");
   });
 
   if (tabName === "favorites") {
@@ -160,10 +227,11 @@ function setTab(tabName) {
     favoritesPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } else if (tabName === "info") {
     favoritesPanel.classList.remove("open");
-    document.querySelector(".info-card").scrollIntoView({ behavior: "smooth", block: "nearest" });
-    showToast("App 100% HTML, CSS y JS");
+    document.getElementById("infoCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    showToast("Abrila en Safari · iPad ready");
   } else {
     favoritesPanel.classList.remove("open");
+    document.querySelector(".quote-box").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 }
 
@@ -171,8 +239,17 @@ document.getElementById("newQuote").addEventListener("click", generateQuote);
 document.getElementById("copyQuote").addEventListener("click", copyQuote);
 document.getElementById("shareQuote").addEventListener("click", shareQuote);
 document.getElementById("speakQuote").addEventListener("click", speakQuote);
-document.getElementById("favoriteQuote").addEventListener("click", toggleFavorite);
+favoriteButton.addEventListener("click", toggleFavorite);
 document.getElementById("clearFavorites").addEventListener("click", clearFavorites);
-document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => setTab(tab.dataset.tab)));
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.setAttribute("aria-selected", tab.classList.contains("active") ? "true" : "false");
+  tab.addEventListener("click", () => setTab(tab.dataset.tab));
+});
+
+// Stop speech when leaving the page (helps on iOS).
+window.addEventListener("pagehide", () => {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+});
 
 renderFavorites();
+updateFavoriteLabel();

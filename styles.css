@@ -10,9 +10,18 @@
   --muted: #b7caec;
   --border: rgba(48, 149, 255, 0.5);
   --shadow: 0 28px 80px rgba(0, 0, 0, 0.4);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 * { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 html, body { min-height: 100%; }
 
@@ -24,18 +33,26 @@ body {
     radial-gradient(circle at 20% 10%, rgba(34, 145, 255, 0.22), transparent 30%),
     radial-gradient(circle at 85% 20%, rgba(255, 210, 30, 0.12), transparent 28%),
     linear-gradient(180deg, #04102b, var(--bg));
+  background-attachment: fixed;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
 }
 
 .app {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: 18px;
+  padding:
+    max(18px, var(--safe-top))
+    max(18px, var(--safe-right))
+    max(18px, var(--safe-bottom))
+    max(18px, var(--safe-left));
 }
 
 .hero-card {
   position: relative;
-  width: min(100%, 460px);
+  width: min(100%, 520px);
   overflow: hidden;
   border: 3px solid var(--border);
   border-radius: 34px;
@@ -55,7 +72,17 @@ body {
   pointer-events: none;
 }
 
-.header, .coach-stage, .quote-box, .actions, .info-card, .favorites-panel, footer { position: relative; z-index: 1; }
+.header,
+.coach-stage,
+.quote-box,
+.actions,
+.info-card,
+.favorites-panel,
+.tabs,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
 
 .header { text-align: center; text-transform: uppercase; }
 
@@ -72,7 +99,7 @@ body {
 h1 {
   margin: 0;
   color: var(--yellow);
-  font-size: clamp(3.2rem, 17vw, 5.3rem);
+  font-size: clamp(3.2rem, 12vw, 5.3rem);
   line-height: .85;
   letter-spacing: 2px;
   text-shadow: 5px 5px 0 #9b7600, 8px 8px 0 #001334;
@@ -83,6 +110,8 @@ h1 {
   color: var(--yellow);
   font-weight: 900;
   opacity: .95;
+  pointer-events: none;
+  user-select: none;
 }
 .stars span:nth-child(1) { top: 68px; left: 28px; }
 .stars span:nth-child(2) { top: 44px; right: 54px; color: #a6d9ff; }
@@ -100,13 +129,18 @@ h1 {
 .coach-stage img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 1 / .76;
   object-fit: cover;
   object-position: center 35%;
   filter: saturate(1.08) contrast(1.03);
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
 }
 
 .quote-box {
+  position: relative;
   display: grid;
   place-items: center;
   min-height: 152px;
@@ -120,9 +154,11 @@ h1 {
 
 #quoteText {
   margin: 0;
-  font-size: clamp(1.18rem, 4.6vw, 1.65rem);
+  font-size: clamp(1.18rem, 3.4vw, 1.65rem);
   line-height: 1.35;
   font-weight: 800;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .quote-mark {
@@ -131,6 +167,8 @@ h1 {
   color: var(--yellow);
   font-weight: 900;
   line-height: 1;
+  pointer-events: none;
+  user-select: none;
 }
 .quote-mark.left { top: 8px; left: 16px; }
 .quote-mark.right { right: 16px; bottom: -8px; color: #20a6ff; }
@@ -142,7 +180,8 @@ button {
   font-weight: 900;
   cursor: pointer;
   color: var(--text);
-  min-height: 48px;
+  min-height: 52px;
+  touch-action: manipulation;
   transition: transform .12s ease, filter .12s ease;
 }
 button:active { transform: translateY(2px) scale(.99); }
@@ -150,7 +189,7 @@ button:focus-visible { outline: 3px solid white; outline-offset: 3px; }
 
 .primary {
   width: 100%;
-  min-height: 62px;
+  min-height: 64px;
   color: #08122e;
   background: linear-gradient(180deg, #ffe05a, var(--yellow));
   box-shadow: inset 0 -4px 0 rgba(0,0,0,.18), 0 8px 0 #a87b00;
@@ -168,6 +207,7 @@ button:focus-visible { outline: 3px solid white; outline-offset: 3px; }
 .secondary-actions button {
   background: linear-gradient(180deg, #137adc, #0756ad);
   box-shadow: inset 0 -4px 0 rgba(0,0,0,.18);
+  font-size: 1rem;
 }
 .secondary-actions button:nth-child(2) { background: linear-gradient(180deg, #13bd68, #078949); }
 .secondary-actions button:nth-child(4) { background: linear-gradient(180deg, #173f84, #0a2a62); }
@@ -204,7 +244,7 @@ button:focus-visible { outline: 3px solid white; outline-offset: 3px; }
   background: rgba(255,255,255,.08);
 }
 
-footer {
+.tabs {
   display: flex;
   gap: 8px;
   justify-content: space-between;
@@ -212,33 +252,80 @@ footer {
   padding-top: 12px;
   border-top: 1px solid rgba(255,255,255,.12);
 }
+
 .tab {
   flex: 1;
-  min-height: 42px;
+  min-height: 48px;
   border-radius: 14px;
   color: #9fd0ff;
   background: transparent;
 }
 .tab.active { background: rgba(36, 147, 255, .18); color: white; }
 
+.site-footer {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.site-footer a {
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 10px 12px;
+  display: inline-block;
+  min-height: 44px;
+  line-height: 24px;
+}
+.site-footer a:active,
+.site-footer a:hover {
+  color: #fff;
+}
+
 #toast {
   position: fixed;
   left: 50%;
-  bottom: 22px;
+  bottom: max(22px, calc(var(--safe-bottom) + 12px));
   z-index: 20;
   transform: translateX(-50%) translateY(100px);
+  max-width: calc(100vw - 32px);
   padding: 12px 16px;
   border-radius: 999px;
   background: #fff;
   color: #061433;
   font-weight: 800;
   opacity: 0;
+  pointer-events: none;
   transition: all .25s ease;
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-@media (max-width: 380px) {
+@media (max-width: 430px) {
   .hero-card { padding: 20px 12px 14px; border-radius: 26px; }
   .secondary-actions { grid-template-columns: 1fr; }
   .quote-box { min-height: 130px; padding: 22px 18px; }
+}
+
+/* iPad / tablets: más aire y tipografía estable */
+@media (min-width: 768px) {
+  .app { padding: max(28px, var(--safe-top)) 28px max(28px, var(--safe-bottom)); }
+  .hero-card {
+    width: min(100%, 640px);
+    padding: 32px 28px 22px;
+  }
+  .secondary-actions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .secondary-actions button {
+    min-height: 56px;
+  }
+  #quoteText { font-size: 1.55rem; }
+}
+
+@media (min-width: 768px) and (orientation: landscape) {
+  .hero-card { width: min(100%, 720px); }
+  .coach-stage { max-width: 420px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button, #toast { transition: none; }
 }
