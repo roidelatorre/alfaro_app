@@ -12,6 +12,9 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="description" content="Generador de frases del técnico Alfaro. Abrilo en Safari en iPad o iPhone." />
   <title>Generador de Frases del Técnico Alfaro</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="assets/alfaro-8bit.png" />
+  <link rel="icon" href="assets/alfaro-8bit.png" type="image/png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -37,14 +40,26 @@
         />
       </div>
 
-      <article class="quote-box" aria-live="polite">
+      <div class="modes" role="group" aria-label="Modo de frase">
+        <button type="button" class="mode active" data-mode="todas">Todas</button>
+        <button type="button" class="mode" data-mode="vestuario">Vestuario</button>
+        <button type="button" class="mode" data-mode="conferencia">Conferencia</button>
+        <button type="button" class="mode" data-mode="prepartido">Prepartido</button>
+        <button type="button" class="mode" data-mode="derrota">Derrota</button>
+        <button type="button" class="mode" data-mode="victoria">Victoria</button>
+      </div>
+
+      <article class="quote-box" id="quoteBox" aria-live="polite">
         <span class="quote-mark left" aria-hidden="true">“</span>
         <p id="quoteText">El fútbol es como un mate que hay que cebar despacio; si te apurás, lo terminás lavando.</p>
         <span class="quote-mark right" aria-hidden="true">”</span>
       </article>
 
+      <p class="stats" id="statsLine" aria-live="polite">Frases generadas: 0</p>
+
       <div class="actions">
         <button type="button" id="newQuote" class="primary">↻ Nueva frase</button>
+        <button type="button" id="dailyQuote" class="daily">📅 Frase del día</button>
         <div class="secondary-actions">
           <button type="button" id="copyQuote">📋 Copiar</button>
           <button type="button" id="shareQuote">🔗 Compartir</button>
@@ -57,18 +72,26 @@
         <div>
           <strong>Sabiduría Alfaro</strong>
           <p>Reflexiones, metáforas y enseñanzas de vida al estilo del Maestro. Pensado para Safari en iPad.</p>
+          <p class="hint">Tip: en Safari → Compartir → Agregar a pantalla de inicio.</p>
         </div>
         <span class="trophy" aria-hidden="true">🏆</span>
+      </section>
+
+      <section class="history-panel" id="historyPanel">
+        <h2>Historial</h2>
+        <ul id="historyList"></ul>
       </section>
 
       <section class="favorites-panel" id="favoritesPanel">
         <h2>Favoritas</h2>
         <ul id="favoritesList"></ul>
-        <button type="button" id="clearFavorites" class="ghost">Borrar favoritas</button>
+        <button type="button" id="exportFavorites" class="ghost">Exportar favoritas</button>
+        <button type="button" id="clearFavorites" class="ghost danger">Borrar favoritas</button>
       </section>
 
       <nav class="tabs" aria-label="Secciones">
         <button type="button" class="tab active" data-tab="quote">⚽ Frase</button>
+        <button type="button" class="tab" data-tab="history">🕐 Historial</button>
         <button type="button" class="tab" data-tab="favorites">♡ Favoritas</button>
         <button type="button" class="tab" data-tab="info">ⓘ Info</button>
       </nav>

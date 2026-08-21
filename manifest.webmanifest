@@ -1,0 +1,18 @@
+{
+  "name": "Frases del Técnico Alfaro",
+  "short_name": "Alfaro",
+  "description": "Generador de frases al estilo del técnico Alfaro",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#04102b",
+  "theme_color": "#04102b",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "assets/alfaro-8bit.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
